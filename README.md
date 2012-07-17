@@ -1,4 +1,3 @@
-
 PyOpenJPEG
 ==========
 
@@ -17,8 +16,8 @@ using either the provided binaries, or by compiling from source.
 
 To install PyOpenJPEG, run:
 
- python setup.py build_ext -i
- python setup.py install
+    python setup.py build_ext -i
+    python setup.py install
 
 Usage
 -----
@@ -38,25 +37,25 @@ version of OpenJPEG from SVN](http://code.google.com/p/openjpeg/source/checkout)
 
 Below are instructions for downloading and building the latest branch on Linux: ::
 
- svn checkout http://openjpeg.googlecode.com/svn/trunk/ openjpeg
- cd openjpeg
- cmake build
- make
- sudo make install
+    svn checkout http://openjpeg.googlecode.com/svn/trunk/ openjpeg
+    cd openjpeg
+    cmake build
+    make
+    sudo make install
  
 There is currently [an issue with OpenJPEG install](https://groups.google.com/forum/?fromgroups#!topic/openjpeg/YllZliu6Vo4)
 which prevents some necessary includes being placed in the proper location. 
 On Linux, you can you fix this by doing: ::
 
- sudo su -
- for file in /usr/local/include/openjpeg-1.99/*.h; do ln -s ${file} /usr/local/include/; done
+    sudo su -
+    for file in /usr/local/include/openjpeg-1.99/*.h; do ln -s ${file} /usr/local/include/; done
 
 The above command will create symbolic links in /usr/local/include to several 
 needed header files.
 
 To compile the PyOpenJPEG Cython code, run: ::
 
- python setup.py build_ext -i
+    python setup.py build_ext -i
 
 TODO
 ----
