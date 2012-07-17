@@ -1,0 +1,6 @@
+recursive-include openjpeg *.py
+recursive-include openjpeg/data/sample *
+include *.txt
+include *.md
+include setup.py
+

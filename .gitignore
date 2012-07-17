@@ -1,0 +1,10 @@
+.DS_Store
+.pydevproject
+.settings
+.project
+*.pyc
+MANIFEST
+build
+dist
+_openjpeg.c
+_openjpeg.so
