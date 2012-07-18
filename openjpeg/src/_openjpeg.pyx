@@ -130,14 +130,14 @@ cdef class Decoder:
         opj.opj_set_info_handler(l_codec, info_callback, <void*>0)
         opj.opj_set_warning_handler(l_codec, warning_callback, <void*>0)
         opj.opj_set_error_handler(l_codec, error_callback, <void*>0)
-
+        
         # setup the decoder using specified parameters
         if not opj.opj_setup_decoder_v2(l_codec, parameters):
             opj.opj_stream_destroy(l_stream)
             fclose(fsrc)
             opj.opj_destroy_codec(l_codec)
             raise Exception("Failed to setup the decoder")
-        
+                
         # read codestream header
         if not opj.opj_read_header(l_stream, l_codec, &image):
             opj.opj_stream_destroy(l_stream)
@@ -145,9 +145,10 @@ cdef class Decoder:
             opj.opj_destroy_codec(l_codec)
             opj.opj_image_destroy(image)
             raise Exception("Failed to read the header")
-        
+
         # decode tile
-        if not opj.opj_get_decoded_tile(l_codec, l_stream, image, 1):
+        # EXCEPTIONS ENCOUNTERED HERE!!!
+        if not opj.opj_get_decoded_tile(l_codec, l_stream, image, parameters.tile_index):
             opj.opj_destroy_codec(l_codec)
             opj.opj_stream_destroy(l_stream)
             opj.opj_image_destroy(image)
@@ -186,10 +187,10 @@ cdef class Decoder:
 # Internal event handlers
 #
 cdef void error_callback(char *msg, void *client_data):
-    raise Exception(msg)
+    raise Exception("[ERROR] %s" % msg)
 
 cdef void warning_callback(char *msg, void *client_data):
-    raise Exception(msg)
+    raise Exception("[WARNING] %s" % msg)
 
 cdef void info_callback(char *msg, void *client_data):
     <void>client_data
