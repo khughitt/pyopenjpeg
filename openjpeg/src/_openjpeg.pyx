@@ -94,7 +94,7 @@ cdef class Decoder:
         num_pixels = w * h
         
         # Convert to an ndarray
-        cdef np.ndarray[np.uint8_t, ndim=1] x = np.empty(num_pixels, np.uint8)        
+        cdef np.ndarray[np.uint8_t, ndim=1] im = np.empty(num_pixels, np.uint8)        
         
         for i in range(num_pixels):
             im[i] = self._image.comps[0].data[i]
@@ -123,13 +123,13 @@ cdef class Decoder:
             fclose(fsrc)
             raise("Failed to open %s for reading" % filename);
         
+        # decode the JPEG 2000 codestream
+        l_codec = opj.opj_create_decompress_v2(opj.CODEC_JP2)
+        
         # Setup event handlers
         opj.opj_set_info_handler(l_codec, info_callback, <void*>0)
         opj.opj_set_warning_handler(l_codec, warning_callback, <void*>0)
         opj.opj_set_error_handler(l_codec, error_callback, <void*>0)
-        
-        # decode the JPEG 2000 codestream
-        l_codec = opj.opj_create_decompress_v2(opj.CODEC_JP2)
 
         # setup the decoder using specified parameters
         if not opj.opj_setup_decoder_v2(l_codec, parameters):
@@ -139,9 +139,20 @@ cdef class Decoder:
             raise Exception("Failed to setup the decoder")
         
         # read codestream header
-        opj.opj_read_header(l_stream, l_codec, &image)
+        if not opj.opj_read_header(l_stream, l_codec, &image):
+            opj.opj_stream_destroy(l_stream)
+            fclose(fsrc)
+            opj.opj_destroy_codec(l_codec)
+            opj.opj_image_destroy(image)
+            raise Exception("Failed to read the header")
         
-        opj.opj_get_decoded_tile(l_codec, l_stream, image, 1)
+        # decode tile
+        if not opj.opj_get_decoded_tile(l_codec, l_stream, image, 1):
+            opj.opj_destroy_codec(l_codec)
+            opj.opj_stream_destroy(l_stream)
+            opj.opj_image_destroy(image)
+            fclose(fsrc)
+            raise Exception("Failed to decode tile")
         
         # close the byte stream
         opj.opj_stream_destroy(l_stream)
@@ -175,14 +186,14 @@ cdef class Decoder:
 # Internal event handlers
 #
 cdef void error_callback(char *msg, void *client_data):
-    raise(msg)
+    raise Exception(msg)
 
 cdef void warning_callback(char *msg, void *client_data):
-    raise(msg)
+    raise Exception(msg)
 
 cdef void info_callback(char *msg, void *client_data):
     <void>client_data
-    print(msg)
+    print("[INFO] %s" % msg)
 
 #
 # JPEG 2000 file signatures

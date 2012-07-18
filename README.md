@@ -35,7 +35,7 @@ Development
 When contributing to PyOpenJPEG, it is recommended that you install the [latest
 version of OpenJPEG from SVN](http://code.google.com/p/openjpeg/source/checkout).
 
-Below are instructions for downloading and building the latest branch on Linux: ::
+Below are instructions for downloading and building the latest branch on Linux:
 
     svn checkout http://openjpeg.googlecode.com/svn/trunk/ openjpeg
     cd openjpeg
@@ -53,7 +53,7 @@ On Linux, you can you fix this by doing: ::
 The above command will create symbolic links in /usr/local/include to several 
 needed header files.
 
-To compile the PyOpenJPEG Cython code, run: ::
+To compile the PyOpenJPEG Cython code, run:
 
     python setup.py build_ext -i
 
