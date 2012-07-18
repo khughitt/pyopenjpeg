@@ -187,14 +187,14 @@ cdef class Decoder:
 # Internal event handlers
 #
 cdef void error_callback(char *msg, void *client_data):
-    raise Exception("[ERROR] %s" % msg)
+    raise Exception("[ERROR] %s" % msg.strip())
 
 cdef void warning_callback(char *msg, void *client_data):
-    raise Exception("[WARNING] %s" % msg)
+    raise Exception("[WARNING] %s" % msg.strip())
 
 cdef void info_callback(char *msg, void *client_data):
     <void>client_data
-    print("[INFO] %s" % msg)
+    print("[INFO] %s" % msg.strip())
 
 #
 # JPEG 2000 file signatures
