@@ -10,6 +10,7 @@ from libc.stdlib cimport calloc, malloc, free
 from libc.stdint cimport int8_t, uint8_t, int16_t, uint16_t, int32_t, uint32_t, int64_t, uint64_t
 import numpy as np
 cimport numpy as np
+import xmlbox
 
 #
 # JPEG 2000 file signatures
@@ -32,7 +33,7 @@ cdef class Decoder:
     def __cinit__(self):
         """Creates a new OpenJPEG Decoder"""
         pass
-
+    
     def decode(self, filename, layer=0, reduce=0, max_quality_layers=None, 
                x0=None, x1=None, y0=None, y1=None, tile_num=None):
         """Decodes a single JPEG 2000 image.
@@ -130,6 +131,31 @@ cdef class Decoder:
         opj.opj_image_destroy(self._image);
         
         return im.reshape((w, h))
+    
+    def get_xmlbox(self, filepath, as_string=False):
+        """Reads in an XML Box and returns it as a Python dictionary.
+        
+        Parameters
+        ----------
+        as_string : bool
+            (Optional) If set to True, the orignal XML string will be returned,
+            otherwise a Python dictionary representation of the XML box is
+            returned. Default = False.
+            
+        Return
+        ------
+        out : dict, string
+            Returns a dictionary or string representation of the XML box
+            
+        Examples
+        --------
+        >>> import openjpeg
+        >>> decoder = openjpeg.Decoder()
+        >>> xmlbox = decoder.get_xmlbox(openjpeg.EIT_IMAGE)
+        >>> xmlbox['meta']['fits']['DATE_OBS']
+        u'2012-05-02T13:13:49.147Z'
+        """
+        return xmlbox.get_xmlbox(filepath, as_string)
     
     cdef opj.opj_image_t* _decode(self, filename, opj.opj_dparameters_t* parameters) except *:
         """Converts raw data into an OpenJPEG image structure"""

@@ -35,8 +35,8 @@ setup(
     cmdclass = {'build_ext': build_ext},
     description=DOCLINES[0],
     # https://bugs.archlinux.org/task/22326
-    ext_modules = [Extension("openjpeg._openjpeg", 
-                             ["openjpeg/src/_openjpeg.pyx"],
+    ext_modules = [Extension("openjpeg.decode", 
+                             ["openjpeg/src/decode.pyx"],
                              libraries=["openjpeg"],
                              include_dirs=[numpy.get_include()])],
     #install_requires=[],
