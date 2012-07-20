@@ -11,6 +11,20 @@ from libc.stdint cimport int8_t, uint8_t, int16_t, uint16_t, int32_t, uint32_t, 
 import numpy as np
 cimport numpy as np
 
+#
+# JPEG 2000 file signatures
+#
+JP2_RFC3745_MAGIC = "\x00\x00\x00\x0c\x6a\x50\x20\x20\x0d\x0a\x87\x0a"
+JP2_MAGIC = "\x0d\x0a\x87\x0a"
+J2K_CODESTREAM_MAGIC = "\xff\x4f\xff\x51"
+
+#
+# Format definitions
+#
+DEF J2K_CFMT = 0
+DEF JP2_CFMT = 1
+DEF JPT_CFMT = 2
+
 cdef class Decoder:
     """JPEG 2000 image decoder"""
     cdef opj.opj_image_t *_image
@@ -174,7 +188,6 @@ cdef class Decoder:
                 opj.opj_image_destroy(image)
                 fclose(fsrc)
                 raise Exception("Failed to set the decoded area")
-            }
 
             # Otherwise grab the whole thing
             if not (opj.opj_decode_v2(l_codec, l_stream, image) and 
@@ -184,8 +197,6 @@ cdef class Decoder:
                 opj.opj_image_destroy(image)
                 fclose(fsrc)
                 raise Exception("Failed to decode image")
-            }
-        }
         else:
             # Decode tile
             if not opj.opj_get_decoded_tile(l_codec, l_stream, image, parameters.tile_index):
@@ -201,19 +212,19 @@ cdef class Decoder:
         
         return image
     
-    def _detect_format(filepath):
+    def _detect_format(self, filepath):
         """Uses the first twelve bytes at the beginning of the file to attempt
         to determine what type of JPEG 2000 data is being loaded."""
         
         # Get signature
         fp = open(filepath)
         signature = fp.read(12)
-        fp.close())
+        fp.close()
         
         # Compare with known types
-        if signature is JP2_RFC3745_MAGIC or signature[:4] is JP2_MAGIC:
+        if signature == JP2_RFC3745_MAGIC or signature[:4] == JP2_MAGIC:
             return JP2_CFMT
-        elif signature[:4] is J2K_CODESTREAM_MAGIC: 
+        elif signature[:4] == J2K_CODESTREAM_MAGIC: 
             return J2K_CFMT
 
         # Raise an error if format is not recognized
@@ -231,17 +242,3 @@ cdef void warning_callback(char *msg, void *client_data):
 cdef void info_callback(char *msg, void *client_data):
     <void>client_data
     print("[INFO] %s" % msg.strip())
-
-#
-# JPEG 2000 file signatures
-#
-DEF JP2_RFC3745_MAGIC = "\x00\x00\x00\x0c\x6a\x50\x20\x20\x0d\x0a\x87\x0a"
-DEF JP2_MAGIC = "\x0d\x0a\x87\x0a"
-DEF J2K_CODESTREAM_MAGIC = "\xff\x4f\xff\x51"
-
-#
-# Format definitions
-#
-DEF J2K_CFMT = 0
-DEF JP2_CFMT = 1
-DEF JPT_CFMT = 2
