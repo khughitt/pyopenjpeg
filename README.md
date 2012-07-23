@@ -61,3 +61,4 @@ TODO
 ----
 1. Add support for saving to some common formats (BMP, PNG, etc)
 2. Add encoding support
+3. Automatically detect bit-depth of images during decoding

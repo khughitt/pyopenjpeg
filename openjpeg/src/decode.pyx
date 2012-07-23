@@ -119,22 +119,30 @@ cdef class Decoder:
         # Get image dimensions
         w = self._image.comps[0].w        
         h = self._image.comps[0].h
-        num_pixels = w * h
         
-        # Test
-        print("Bits per pixel: %d" % self._image.comps[0].bpp)
-        print("Precision: %d" % self._image.comps[0].prec)
+        num_comps = int(self._image.numcomps)
+        num_pixels = num_comps * w * h
+        
+        # Bit-depth info
+        #print("Bits per pixel: %d" % self._image.comps[0].bpp)
+        #print("Precision: %d" % self._image.comps[0].prec)
+        dtype = np.uint8
         
         # Convert to an ndarray
-        cdef np.ndarray[np.uint8_t, ndim=1] im = np.empty(num_pixels, np.uint8)        
+        # http://wiki.cython.org/tutorials/numpy#Cythonspecificmethods
+        # http://wiki.cython.org/enhancements/buffer
+        cdef np.ndarray[np.uint8_t, ndim=1] im = np.empty(num_pixels, dtype)
         
-        for i in range(num_pixels):
-            im[i] = self._image.comps[0].data[i]
+        pixel_num = 0
+        for comp_num in range(num_comps):
+            for i in range(w * h):
+                im[pixel_num] = self._image.comps[comp_num].data[i]
+                pixel_num += 1
 
         # free image data structure
         opj.opj_image_destroy(self._image);
-        
-        return im.reshape((w, h))
+
+        return im.reshape((num_comps, w, h))
     
     def get_xmlbox(self, filepath, as_string=False):
         """Reads in an XML Box and returns it as a Python dictionary.
