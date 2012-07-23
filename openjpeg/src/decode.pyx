@@ -142,7 +142,7 @@ cdef class Decoder:
         # free image data structure
         opj.opj_image_destroy(self._image);
 
-        return im.reshape((num_comps, w, h))
+        return im.reshape((num_comps, h, w)).transpose(1, 2, 0)
     
     def get_xmlbox(self, filepath, as_string=False):
         """Reads in an XML Box and returns it as a Python dictionary.
