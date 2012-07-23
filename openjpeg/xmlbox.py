@@ -158,8 +158,3 @@ def get_node_text(node):
         else:
             raise NotTextNodeError
     return t
-
-if __name__ == "__main__":
-    import openjpeg
-    from openjpeg import xmlbox
-    xmlbox.get_xmlbox(openjpeg.EIT_IMAGE)

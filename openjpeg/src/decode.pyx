@@ -121,6 +121,10 @@ cdef class Decoder:
         h = self._image.comps[0].h
         num_pixels = w * h
         
+        # Test
+        print("Bits per pixel: %d" % self._image.comps[0].bpp)
+        print("Precision: %d" % self._image.comps[0].prec)
+        
         # Convert to an ndarray
         cdef np.ndarray[np.uint8_t, ndim=1] im = np.empty(num_pixels, np.uint8)        
         
@@ -151,7 +155,7 @@ cdef class Decoder:
         --------
         >>> import openjpeg
         >>> decoder = openjpeg.Decoder()
-        >>> xmlbox = decoder.get_xmlbox(openjpeg.EIT_IMAGE)
+        >>> xmlbox = decoder.get_xmlbox(openjpeg.IMAGE_EIT)
         >>> xmlbox['meta']['fits']['DATE_OBS']
         u'2012-05-02T13:13:49.147Z'
         """

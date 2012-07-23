@@ -27,7 +27,7 @@ Here is a quick example of decoding an image:
 ```python
 >>> import openjpeg
 >>> decoder = openjpeg.Decoder()
->>> img = decoder.decode(openjpeg.EIT_IMAGE)
+>>> img = decoder.decode(openjpeg.IMAGE_EIT)
 ```
 
 Development
