@@ -4,7 +4,7 @@ Python wrapper to the OpenJPEG library (2.0).
 
 keith.hughitt@gmail.com
 """
-cimport copenjpeg as opj
+cimport openjpeg as opj
 from libc.stdio cimport fopen, fclose, printf, fprintf, FILE
 from libc.stdlib cimport calloc, malloc, free
 from libc.stdint cimport int8_t, uint8_t, int16_t, uint16_t, int32_t, uint32_t, int64_t, uint64_t
