@@ -190,8 +190,8 @@ cdef class Decoder:
         
         # Decode the JPEG 2000 codestream
         codecs = {
-            JP2_CFMT: opj.CODEC_JP2,    # JPEG 2000 compressed image data
-            J2K_CFMT: opj.CODEC_J2K     # JPEG-2000 codestream
+            JP2_CFMT: opj.OPJ_CODEC_JP2,    # JPEG 2000 compressed image data
+            J2K_CFMT: opj.OPJ_CODEC_J2K     # JPEG-2000 codestream
         }
         l_codec = opj.opj_create_decompress_v2(codecs[parameters.decod_format])
         

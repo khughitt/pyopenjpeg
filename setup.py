@@ -37,7 +37,7 @@ setup(
     # https://bugs.archlinux.org/task/22326
     ext_modules = [Extension("openjpeg.decode", 
                              ["openjpeg/src/decode.pyx"],
-                             libraries=["openjpeg"],
+                             libraries=["openjp2"],
                              include_dirs=[numpy.get_include()])],
     #install_requires=[],
     license="BSD",

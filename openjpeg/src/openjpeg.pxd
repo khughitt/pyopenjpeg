@@ -46,7 +46,7 @@ cdef extern from "openjpeg.h":
     #     Compiler directives
     # ==========================================================
     #
-    ctypedef bint opj_bool
+    ctypedef bint OPJ_BOOL
     
     DEF OPJ_TRUE = 1
     DEF OPJ_FALSE = 0
@@ -143,10 +143,10 @@ cdef extern from "openjpeg.h":
     
     # Supported codec
     cdef enum CODEC_FORMAT:
-        CODEC_UNKNOWN = -1  # place-holder
-        CODEC_J2K  = 0      # JPEG-2000 codestream : read/write
-        CODEC_JPT  = 1      # JPT-stream (JPEG 2000, JPIP) : read only
-        CODEC_JP2  = 2      # JPEG-2000 file format : read/write
+        OPJ_CODEC_UNKNOWN = -1  # place-holder
+        OPJ_CODEC_J2K  = 0      # JPEG-2000 codestream : read/write
+        OPJ_CODEC_JPT  = 1      # JPT-stream (JPEG 2000, JPIP) : read only
+        OPJ_CODEC_JP2  = 2      # JPEG-2000 file format : read/write
     ctypedef CODEC_FORMAT OPJ_CODEC_FORMAT
     
     # Limit decoding to certain portions of the codestream.
@@ -209,7 +209,7 @@ cdef extern from "openjpeg.h":
     #
     cdef struct opj_cparameters:
         
-        opj_bool tile_size_on   # size of tile: tile_size_on = false (not in argument) or = true (in argument)
+        OPJ_BOOL tile_size_on   # size of tile: tile_size_on = false (not in argument) or = true (in argument)
         int cp_tx0              # XTOsiz
         int cp_ty0              # YTOsiz
         int cp_tdx              # XTsiz
@@ -255,7 +255,7 @@ cdef extern from "openjpeg.h":
         #
         # JPWL encoding parameters
         #
-        opj_bool jpwl_epc_on                                # enables writing of EPC in MH, thus activating JPWL
+        OPJ_BOOL jpwl_epc_on                                # enables writing of EPC in MH, thus activating JPWL
         int jpwl_hprot_MH                                   # error protection method for MH (0,1,16,32,37-128)
         int jpwl_hprot_TPH_tileno[JPWL_MAX_NO_TILESPECS]    # tile number of header protection specification (>=0)
         int jpwl_hprot_TPH[JPWL_MAX_NO_TILESPECS]           # error protection methods for TPHs (0,1,16,32,37-128)
@@ -275,7 +275,7 @@ cdef extern from "openjpeg.h":
         char tp_on                      # Tile part generation
         char tp_flag                    # Flag for Tile part generation
         char tcp_mct                    # MCT (multiple component transform)
-        opj_bool jpip_on                # Enable JPIP indexing
+        OPJ_BOOL jpip_on                # Enable JPIP indexing
         void * mct_data                 # Naive implementation of MCT restricted to a single reversible array based encoding without offset concerning all the components.
     ctypedef opj_cparameters opj_cparameters_t
 
@@ -305,12 +305,12 @@ cdef extern from "openjpeg.h":
         OPJ_UINT32 DA_x1                # Decoding area right boundary
         OPJ_UINT32 DA_y0                # Decoding area up boundary
         OPJ_UINT32 DA_y1                # Decoding area bottom boundary
-        opj_bool m_verbose              # Verbose mode
+        OPJ_BOOL m_verbose              # Verbose mode
         OPJ_UINT32 tile_index           # tile number ot the decoded tile*/
         OPJ_UINT32 nb_tile_to_decode    # Nb of tile to decode
 
         # JPWL decoding parameters
-        opj_bool jpwl_correct       # activates the JPWL correction capabilities
+        OPJ_BOOL jpwl_correct       # activates the JPWL correction capabilities
         int jpwl_exp_comps          # expected number of components
         int jpwl_max_tiles          # maximum number of tiles
 
@@ -345,7 +345,7 @@ cdef extern from "openjpeg.h":
     ctypedef OPJ_SIZE_T (* opj_stream_read_fn) (void * p_buffer, OPJ_SIZE_T p_nb_bytes, void * p_user_data)
     ctypedef OPJ_SIZE_T (* opj_stream_write_fn) (void * p_buffer, OPJ_SIZE_T p_nb_bytes, void * p_user_data)
     ctypedef OPJ_OFF_T (* opj_stream_skip_fn) (OPJ_OFF_T p_nb_bytes, void * p_user_data)
-    ctypedef opj_bool (* opj_stream_seek_fn) (OPJ_OFF_T p_nb_bytes, void * p_user_data)
+    ctypedef OPJ_BOOL (* opj_stream_seek_fn) (OPJ_OFF_T p_nb_bytes, void * p_user_data)
     
     #
     # JPEG2000 Stream.
@@ -675,8 +675,8 @@ cdef extern from "openjpeg.h":
     #
     # @return    a stream object.
     #
-    opj_stream_t* opj_stream_default_create(opj_bool p_is_input)
-    opj_stream_t* opj_stream_create(OPJ_SIZE_T p_buffer_size, opj_bool p_is_input)
+    opj_stream_t* opj_stream_default_create(OPJ_BOOL p_is_input)
+    opj_stream_t* opj_stream_create(OPJ_SIZE_T p_buffer_size, OPJ_BOOL p_is_input)
     
     #
     # Destroys a stream created by opj_create_stream. This function does NOT close the abstract stream. If needed the user must
@@ -734,17 +734,17 @@ cdef extern from "openjpeg.h":
     # @param p_file the file stream to operate on
     # @param p_is_read_stream whether the stream is a read stream (true) or not (false)
     #
-    opj_stream_t* opj_stream_create_default_file_stream (FILE * p_file, opj_bool p_is_read_stream)
-    opj_stream_t* opj_stream_create_file_stream (FILE * p_file, OPJ_SIZE_T p_buffer_size, opj_bool p_is_read_stream)
+    opj_stream_t* opj_stream_create_default_file_stream (FILE * p_file, OPJ_BOOL p_is_read_stream)
+    opj_stream_t* opj_stream_create_file_stream (FILE * p_file, OPJ_SIZE_T p_buffer_size, OPJ_BOOL p_is_read_stream)
 
     #
     # ==========================================================
     #    event manager function definitions
     # ==========================================================
     #
-    opj_bool opj_set_info_handler(opj_codec_t * p_codec, opj_msg_callback p_callback,void * p_user_data)
-    opj_bool opj_set_warning_handler(opj_codec_t * p_codec, opj_msg_callback p_callback,void * p_user_data)
-    opj_bool opj_set_error_handler(opj_codec_t * p_codec, opj_msg_callback p_callback,void * p_user_data)
+    OPJ_BOOL opj_set_info_handler(opj_codec_t * p_codec, opj_msg_callback p_callback,void * p_user_data)
+    OPJ_BOOL opj_set_warning_handler(opj_codec_t * p_codec, opj_msg_callback p_callback,void * p_user_data)
+    OPJ_BOOL opj_set_error_handler(opj_codec_t * p_codec, opj_msg_callback p_callback,void * p_user_data)
     
     #
     # ==========================================================
@@ -771,7 +771,7 @@ cdef extern from "openjpeg.h":
     # @param    p_codec    the JPEG2000 codec to read.
     # @param    p_stream   the JPEG2000 stream.
     #
-    opj_bool opj_end_decompress (opj_codec_t *p_codec, opj_stream_t *p_stream)
+    OPJ_BOOL opj_end_decompress (opj_codec_t *p_codec, opj_stream_t *p_stream)
     
     #
     # Set decoding parameters to default values
@@ -788,7 +788,7 @@ cdef extern from "openjpeg.h":
     #
     # @return true         if the decoder is correctly set
     #
-    opj_bool opj_setup_decoder_v2(opj_codec_t *p_codec, opj_dparameters_t *parameters )
+    OPJ_BOOL opj_setup_decoder_v2(opj_codec_t *p_codec, opj_dparameters_t *parameters )
     
     #
     # Decodes an image header.
@@ -799,7 +799,7 @@ cdef extern from "openjpeg.h":
     #
     # @return true          if the main header of the codestream and the JP2 header is correctly read.
     #
-    opj_bool opj_read_header (opj_stream_t *p_stream, opj_codec_t *p_codec, opj_image_t **p_image)
+    OPJ_BOOL opj_read_header (opj_stream_t *p_stream, opj_codec_t *p_codec, opj_image_t **p_image)
     
     #
     # Sets the given area to be decoded. This function should be called right after opj_read_header and before any tile header reading.
@@ -812,7 +812,7 @@ cdef extern from "openjpeg.h":
     #
     # @return    true      if the area could be set.
     #
-    opj_bool opj_set_decode_area(opj_codec_t *p_codec, opj_image_t* p_image, 
+    OPJ_BOOL opj_set_decode_area(opj_codec_t *p_codec, opj_image_t* p_image, 
                                  OPJ_INT32 p_start_x, OPJ_INT32 p_start_y, 
                                  OPJ_INT32 p_end_x, OPJ_INT32 p_end_y )
     
@@ -825,7 +825,7 @@ cdef extern from "openjpeg.h":
     #
     # @return                  true if success, otherwise false
     #
-    opj_bool opj_decode_v2(opj_codec_t *p_decompressor, opj_stream_t *p_stream,
+    OPJ_BOOL opj_decode_v2(opj_codec_t *p_decompressor, opj_stream_t *p_stream,
                            opj_image_t *p_image)
     
     #
@@ -838,7 +838,7 @@ cdef extern from "openjpeg.h":
     #
     # @return                 true if success, otherwise false
     #
-    opj_bool opj_get_decoded_tile(opj_codec_t *p_codec, opj_stream_t *p_stream,
+    OPJ_BOOL opj_get_decoded_tile(opj_codec_t *p_codec, opj_stream_t *p_stream,
                                   opj_image_t *p_image, OPJ_UINT32 tile_index)
     
     #
@@ -849,7 +849,7 @@ cdef extern from "openjpeg.h":
     #
     # @return                 true if success, otherwise false
     #
-    opj_bool opj_set_decoded_resolution_factor(opj_codec_t *p_codec, OPJ_UINT32 res_factor)
+    OPJ_BOOL opj_set_decoded_resolution_factor(opj_codec_t *p_codec, OPJ_UINT32 res_factor)
     
     #
     # Writes a tile with the given data.
@@ -863,7 +863,7 @@ cdef extern from "openjpeg.h":
     #
     # @return   true if the data could be written.
     #
-    opj_bool opj_write_tile (opj_codec_t *p_codec, OPJ_UINT32 p_tile_index,
+    OPJ_BOOL opj_write_tile (opj_codec_t *p_codec, OPJ_UINT32 p_tile_index,
                              OPJ_BYTE *p_data, OPJ_UINT32 p_data_size,
                              opj_stream_t *p_stream )
     
@@ -889,11 +889,11 @@ cdef extern from "openjpeg.h":
     # @return    true           if the tile header could be decoded. In case the decoding should end, the returned value is still true.
     #                           returning false may be the result of a shortage of memory or an internal error.
     #
-    opj_bool opj_read_tile_header(opj_codec_t *p_codec, opj_stream_t *p_stream,
+    OPJ_BOOL opj_read_tile_header(opj_codec_t *p_codec, opj_stream_t *p_stream,
                                   OPJ_UINT32 *p_tile_index, OPJ_UINT32 *p_data_size,
                                   OPJ_INT32 *p_tile_x0, OPJ_INT32 *p_tile_y0,
                                   OPJ_INT32 *p_tile_x1, OPJ_INT32 *p_tile_y1,
-                                  OPJ_UINT32 *p_nb_comps, opj_bool *p_should_go_on)
+                                  OPJ_UINT32 *p_nb_comps, OPJ_BOOL *p_should_go_on)
     
     #
     # Reads a tile data. This function is compulsory and allows one to decode tile data. opj_read_tile_header should be called before.
@@ -907,7 +907,7 @@ cdef extern from "openjpeg.h":
     #
     # @return   true           if the data could be decoded.
     #
-    opj_bool opj_decode_tile_data(opj_codec_t *p_codec, OPJ_UINT32 p_tile_index,
+    OPJ_BOOL opj_decode_tile_data(opj_codec_t *p_codec, OPJ_UINT32 p_tile_index,
                                   OPJ_BYTE *p_data, OPJ_UINT32 p_data_size,
                                   opj_stream_t *p_stream)
     
@@ -953,13 +953,13 @@ cdef extern from "openjpeg.h":
     # @param parameters    Compression parameters
     # @param image         Input filled image
     #
-    opj_bool opj_setup_encoder_v2(opj_codec_t *p_codec, opj_cparameters_t *parameters, 
+    OPJ_BOOL opj_setup_encoder_v2(opj_codec_t *p_codec, opj_cparameters_t *parameters, 
                                   opj_image_t *image)
     
-    opj_bool opj_start_compress(opj_codec_t *p_codec, opj_image_t * p_image,
+    OPJ_BOOL opj_start_compress(opj_codec_t *p_codec, opj_image_t * p_image,
                                 opj_stream_t *p_cio)
     
-    opj_bool opj_end_compress (opj_codec_t *p_codec, opj_stream_t *p_stream)
+    OPJ_BOOL opj_end_compress (opj_codec_t *p_codec, opj_stream_t *p_stream)
     
     #
     # Encode an image into a JPEG-2000 codestream
@@ -969,7 +969,7 @@ cdef extern from "openjpeg.h":
     #
     # @return                 Returns true if successful, returns false otherwise
     #
-    opj_bool opj_encode_v2(opj_codec_t *p_codec, opj_stream_t *p_stream)
+    OPJ_BOOL opj_encode_v2(opj_codec_t *p_codec, opj_stream_t *p_stream)
     
     #
     # Destroy Codestream information after compression or decompression
@@ -1050,7 +1050,7 @@ cdef extern from "openjpeg.h":
     #
     # @return   true if the parameters could be set.
     #
-    opj_bool opj_set_MCT(opj_cparameters_t *parameters,
+    OPJ_BOOL opj_set_MCT(opj_cparameters_t *parameters,
                          OPJ_FLOAT32 * pEncodingMatrix,
                          OPJ_INT32 * p_dc_shift,
                          OPJ_UINT32 pNbComp)
