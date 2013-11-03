@@ -1,6 +1,14 @@
 PyOpenJPEG
 ==========
 
+Deprecation Notice
+------------------
+This code is no longer being actively developed. For a more fully functional
+and active effort to create a Python interface to OpenJPEG, check out the 
+[Glymur](https://github.com/quintusdias/glymur) project.
+
+Overview
+--------
 PyOpenJPEG is a Python wrapper around the [OpenJPEG ](www.openjpeg.org) 
 [JPEG 2000](http://www.jpeg.org/jpeg2000/) image library written using 
 [Cython](http://www.cython.org/).
